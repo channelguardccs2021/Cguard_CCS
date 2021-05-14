@@ -1,0 +1,10 @@
+setup.py
+agt/__init__.py
+agt/alexa_gadget.py
+agt/base_adapter.py
+agt/messages_pb2.py
+agt/util.py
+agt.egg-info/PKG-INFO
+agt.egg-info/SOURCES.txt
+agt.egg-info/dependency_links.txt
+agt.egg-info/top_level.txt
