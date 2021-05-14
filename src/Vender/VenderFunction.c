@@ -8,16 +8,9 @@
 #include "common.h"
 #include <wiringPi.h>
 
-int operatrtime = 0;
 
-void OperateDevice(bool value,char* channel_name)
-{   operatrtime = operatrtime +1;
-    //printf("it is the %d time to operate device", operatrtime);
-    if (operatrtime == 1)
-    {
-        closeotherChannel(channel_name);
-    }
-
+void OperateDevice(bool value)
+{   
     //led init
     char LED = 4;// <wiringPi.h> gpio23 Eighth on the upper right
     if(wiringPiSetup() < 0){

@@ -51,7 +51,6 @@ HOMEKIT_INCLUDE_DIRS += -I ../../src/HomeKit
 # CGuard2
 CGUARD2 = ../..
 CG2_INCLUDE_DIR += -I $(CGUARD2)/include
-CG2_SRC_DIRS += $(shell find $(CGUARD2)/src/Common -name '*.c')
 CG2_SRC_DIRS += $(shell find $(CGUARD2)/src/Vender -name '*.c')
 CG2_SRC_DIRS += $(shell find $(CGUARD2)/src/AmazonMQTT -name '*.c')
 CG2_SRC_DIRS += $(shell find $(CGUARD2)/src/Homekit -name '*.c')

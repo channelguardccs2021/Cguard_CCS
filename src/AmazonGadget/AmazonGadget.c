@@ -55,17 +55,7 @@ void runGadget(void){
 		// printf("|        make sure setup gadget in lib        |\n");
 		// printf("+---------------------------------------------+\n");
 		// exit if this channel is not avaliable
-		if (checkChannel("Gadget") == 0){
-			printf("Gadget Channel closed. \n");
-			system(wake_clear_cmd);
-			printf("\ngadget unpair and clear ok\n");
-
-			system("sudo ps aux|grep python|grep -v grep|cut -c 9-15|xargs kill -9");//kill python
-			printf("\ngadget quit\n");
-			//fclose(fp);//close file
-			break;
-			return;
-		}
+	
 		//temp_status init = 0
 		fp = fopen("gadget_led", "r");//open file
 		fseek( fp, 0, SEEK_SET );
@@ -74,7 +64,7 @@ void runGadget(void){
 
 		if(gadget_led_status != temp_status){
 			if(gadget_led_status == 0 || gadget_led_status == 1){
-				OperateDevice(intToBool(gadget_led_status),"Gadget");
+				OperateDevice(intToBool(gadget_led_status));
 				printf("\n****Gadget Set light status to %d ****\n", gadget_led_status);
 				temp_status = gadget_led_status;//update temp_status
 			}

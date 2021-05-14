@@ -71,11 +71,8 @@ public class PubSubActivity extends Activity {
     private static final String CERTIFICATE_ID = "default";
 
     EditText txtSubcribe;
-    //EditText txtTopic;
-    //EditText txtMessage;
 
     TextView tvLastMessage;
-    //TextView tvClientId;
     TextView tvStatus;
     TextView ZigbeeStatus;
     TextView GadgetStatus;
@@ -93,35 +90,6 @@ public class PubSubActivity extends Activity {
 
     KeyStore clientKeyStore = null;
     String certificateId;
-
-//    public void connectClick(final View view) {
-//        Log.d(LOG_TAG, "clientId = " + clientId);
-//
-//        try {
-//            mqttManager.connect(clientKeyStore, new AWSIotMqttClientStatusCallback() {
-//                @Override
-//                public void onStatusChanged(final AWSIotMqttClientStatus status,
-//                                            final Throwable throwable) {
-//                    Log.d(LOG_TAG, "Status = " + String.valueOf(status));
-//
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //tvStatus.setText(status.toString());
-//                            Toast.makeText(getApplicationContext(), status.toString(), Toast.LENGTH_LONG).show();
-//                            if (throwable != null) {
-//                                Log.e(LOG_TAG, "Connection error.", throwable);
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//        } catch (final Exception e) {
-//            Log.e(LOG_TAG, "Connection error.", e);
-//            Toast.makeText(getApplicationContext(), "Error! " + e.getMessage(), Toast.LENGTH_LONG).show();
-//            //tvStatus.setText("Error! " + e.getMessage());
-//        }
-//    }
 
     public void bindClick(final View view){
         final String topic = "CheckLightStatus";
@@ -154,37 +122,6 @@ public class PubSubActivity extends Activity {
             Log.e(LOG_TAG, "Subscription error.", e);
         }
     }
-//    public void subscribeClick(final View view) {
-//        final String topic = txtSubcribe.getText().toString();
-//        final String topic = "CheckLightStatus";
-//        Log.d(LOG_TAG, "topic = " + topic);
-//
-//        try {
-//            mqttManager.subscribeToTopic(topic, AWSIotMqttQos.QOS0,
-//                    new AWSIotMqttNewMessageCallback() {
-//                        @Override
-//                        public void onMessageArrived(final String topic, final byte[] data) {
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    try {
-//                                        String message = new String(data, "UTF-8");
-//                                        Log.d(LOG_TAG, "Message arrived:");
-//                                        Log.d(LOG_TAG, "   Topic: " + topic);
-//                                        Log.d(LOG_TAG, " Message: " + message);
-//
-//                                        tvLastMessage.setText(message);
-//                                    } catch (UnsupportedEncodingException e) {
-//                                        Log.e(LOG_TAG, "Message encoding error.", e);
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    });
-//        } catch (Exception e) {
-//            Log.e(LOG_TAG, "Subscription error.", e);
-//        }
-//    }
 
     /*
     * Light Control("on" and "off")
@@ -214,117 +151,6 @@ public class PubSubActivity extends Activity {
     }
 
 
-    /*
-     * Zigbee Control("enable" and "disable")
-     */
-    public void enableZigbeeClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "Z";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Enable Zigbee Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_online);
-            ZigbeeStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            ZigbeeStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-    public void disableZigbeeClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "z";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Disable Zigbee Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_invisible);
-            ZigbeeStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            ZigbeeStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-    /*
-     * Gadget Control("enable" and "disable")
-     */
-    public void enableGadgetClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "G";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Enable Gadget Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_online);
-            GadgetStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            GadgetStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-    public void disableGadgetClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "g";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Disable Gadget Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_invisible);
-            GadgetStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            GadgetStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-
-    /*
-     * Homekit Control("enable" and "disable")
-     */
-    public void enableHomekitClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "H";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Enable Homekit Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_online);
-            HomekitStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            HomekitStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-    public void disableHomekitClick(final View view) {
-        final String topic = "myLightBulb";
-        final String msg = "h";
-
-        try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-            Toast.makeText(getApplicationContext(), "Disable Homekit Channel~", Toast.LENGTH_LONG).show();
-            Drawable drawable= getResources().getDrawable(android.R.drawable.presence_invisible);
-            HomekitStatus.setCompoundDrawablesWithIntrinsicBounds(drawable,null, null, null);
-            HomekitStatus.setCompoundDrawablePadding(4);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Publish error.", e);
-        }
-    }
-
-//    public void publishClick(final View view) {
-//        final String topic = txtTopic.getText().toString();
-//        final String msg = txtMessage.getText().toString();
-//
-//        try {
-//            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
-//        } catch (Exception e) {
-//            Log.e(LOG_TAG, "Publish error.", e);
-//        }
-//    }
-
     public void disconnectClick(final View view) {
         final String topic = "myLightBulb";
         final String msg = "e";
@@ -345,27 +171,17 @@ public class PubSubActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //txtSubcribe = findViewById(R.id.txtSubcribe);
-        //txtTopic = findViewById(R.id.txtTopic);
-        //txtMessage = findViewById(R.id.txtMessage);
-
         tvLastMessage = findViewById(R.id.tvLastMessage);
-        //tvClientId = findViewById(R.id.tvClientId);
-        //tvStatus = findViewById(R.id.tvStatus);
 
         ZigbeeStatus = findViewById(R.id.textView5);
         GadgetStatus = findViewById(R.id.textView6);
         HomekitStatus = findViewById(R.id.textView7);
         MqttStatus = findViewById(R.id.textView2);
 
-        //btnConnect = findViewById(R.id.btnConnect);
-        //btnConnect.setEnabled(false);
-
         // MQTT client IDs are required to be unique per AWS IoT account.
         // This UUID is "practically unique" but does not _guarantee_
         // uniqueness.
         clientId = UUID.randomUUID().toString();
-        //tvClientId.setText(clientId);
 
         // Initialize the AWS Cognito credentials provider
         AWSMobileClient.getInstance().initialize(this, new Callback<UserStateDetails>() {

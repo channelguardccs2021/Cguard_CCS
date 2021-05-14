@@ -61,10 +61,6 @@ void disconnectCallbackHandler(AWS_IoT_Client *pClient, void *data) {
 // void runAmazonMQTT(char *certDirectory, const char *pTopicName, QoS qos, pApplicationHandler_t pApplicationHandler, void *pApplicationHandlerData){
 void runAmazonMQTT(void){
     // exit if this channel is not avaliable
-    if (checkChannel(channel) == 0){
-        printf("Channel closed. \n");
-        return;
-    }
     if (certDirectory == NULL || pTopicName == NULL ||qos == -1 || pApplicationHandler == NULL){
         printf("Parameters error.\n");
         if(certDirectory == NULL){
@@ -158,14 +154,6 @@ void runAmazonMQTT(void){
     
 
     while(NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc) {
-
-        printf("checkChannel returned value: %d\n", checkChannel(channel));
-
-        if (checkChannel(channel) != 1){
-            IOT_INFO("MQTT channel is closed.\n");
-            break;
-        }
-
         
         if(ReadDeviceStatus() == 0)
             sprintf(cPayload, "%s", "Status:OFF");

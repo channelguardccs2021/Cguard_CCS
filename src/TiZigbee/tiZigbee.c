@@ -19,12 +19,6 @@ void runZigbee(void){
 	printf("waiting... \n");
 	while(1)
 	{  
-		if (checkChannel("Zigbee") == 0){
-			printf("Channel closed. \n");
-			serialPrintf(fd, "0");
-			serialClose(fd);
-			return;
-		}	
      
 		receiveVal=  serialGetchar(fd);
 		//printf("receiveVal: %d\n", receiveVal);
@@ -33,20 +27,16 @@ void runZigbee(void){
 		{
 			case 235:   //on-n
 			  printf("received command:>>n---turn on the light");
-			  OperateDevice(true,"Zigbee");
+			  OperateDevice(true);
 			  break;
 			case 233:   //off-f
 			  printf("received command:>>f---turn off the light");
-			  OperateDevice(false,"Zigbee");
+			  OperateDevice(false);
 			  break;
 			case 236:  //query-q
 			  printf("received command:>>q---check the staus of light");
 			  ReadDeviceStatus();
-			  break;
-	        case 232:  //query-e
-			  printf("received command:>>e---stop Zigbee Control\n");
-			  disableChannel("Zigbee");
-			  break;				
+			  break;			
 	  }
 	  
 	}

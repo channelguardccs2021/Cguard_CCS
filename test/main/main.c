@@ -6,6 +6,7 @@
 
 #include "common.h"
 #include "amazonMQTT.h"
+#include "homekit.h"
 #include "VendorFunction.h"
 
 bool gLightBulbState = false;
@@ -35,10 +36,10 @@ void iot_subscribe_callback_handler(AWS_IoT_Client *pClient, char *topicName, ui
 
     switch(cmd) {
         case 't':
-			OperateDevice(true,"amazon_MQTT");
+			OperateDevice(true);
             break;
         case 'f':
-			OperateDevice(false,"amazon_MQTT");
+			OperateDevice(false);
             break;
         case 'q':
             pthread_mutex_lock(&gMutexLightBulb);
@@ -49,36 +50,6 @@ void iot_subscribe_callback_handler(AWS_IoT_Client *pClient, char *topicName, ui
             IOT_INFO("Exiting from AWSChannel.");
             pthread_exit(NULL);
             break;
-        // enable Homekit Chennel
-        case 'H':
-            err = enableChannel("homekit");
-            check_err(err, 0, "Failed to enable homekit channel.");
-            mqtt_log("homekit channel enabled!");
-            break;
-        // diable Homekit Chennel
-        case 'h':
-            disableChannel("homekit");
-            break;
-        // enable Zigbee channel
-        case 'Z':
-            err = enableChannel("Zigbee");
-            check_err(err, 0, "Failed to enable Zigbee channel.");
-            mqtt_log("Zigbee channel enabled!");
-            break;
-        // diable Zigbee Chennel
-        case 'z':
-            disableChannel("Zigbee");
-            break;
-        // enable Gadget channel
-        case 'G':
-            err = enableChannel("Gadget");
-            check_err(err, 0, "Failed to enable Gadget channel.");
-            mqtt_log("Gadget channel enabled!");
-            break;
-        // diable Gadget Chennel
-        case 'g':
-            disableChannel("Gadget");
-            break;
         default:
             printf("[Error:] Unsupported command.\n");
             break;
@@ -86,13 +57,9 @@ void iot_subscribe_callback_handler(AWS_IoT_Client *pClient, char *topicName, ui
 }
 
 int main(void){
-    char *channel_names[] = {"amazon_MQTT", "homekit", "Gadget", "Zigbee"};
-    int err;
+
 	pthread_mutex_init(&gMutexLightBulb, NULL);
 
-    err = initChannelList(channel_names, 4);
-    check_err(err, 0, "Failed to initialize.");
-    mqtt_log("channel initialized!");
 
     certDirectory = "./cert";
     pTopicName = "myLightBulb";
@@ -100,34 +67,49 @@ int main(void){
     pApplicationHandler = &iot_subscribe_callback_handler;
     pApplicationHandlerData = NULL;
 
-    err = enableChannel("amazon_MQTT");
-    check_err(err, 0, "Failed to enable amazon_MQTT channel.");
-    mqtt_log("amazon_MQTT channel enabled!");
+    
+     int ThreadSuccess1 = 0;
+    pthread_t *channel_thread_id1 = (pthread_t *)malloc(sizeof(pthread_t));
+    ThreadSuccess1 = pthread_create(channel_thread_id1, NULL, (void *)runAmazonMQTT, NULL); 
+    if(0 != ThreadSuccess1){
+        printf("Create AWS pthread error\n");
+        exit(1);
+    }
 
-    err = enableChannel("homekit");
-    check_err(err, 0, "Failed to enable homekit channel.");
-    mqtt_log("homekit channel enabled!");
+    int ThreadSuccess2 = 0;
+    pthread_t *channel_thread_id2 = (pthread_t *)malloc(sizeof(pthread_t));
+    ThreadSuccess2 = pthread_create(channel_thread_id2, NULL, (void *)runHomekit, NULL); 
+    if(0 != ThreadSuccess2){
+        printf("Create homekit pthread error\n");
+        exit(1);
+    }
 
-    err = enableChannel("Gadget");
-    check_err(err, 0, "Failed to enable Gadget channel.");
-    mqtt_log("Gadget channel enabled!");
+    int ThreadSuccess3 = 0;
+    pthread_t *channel_thread_id3 = (pthread_t *)malloc(sizeof(pthread_t));
+    ThreadSuccess3 = pthread_create(channel_thread_id3, NULL, (void *)runZigbee, NULL); 
+    if(0 != ThreadSuccess3){
+        printf("Create Zigbee pthread error\n");
+        exit(1);
+    }
 
 
-    err = enableChannel("Zigbee");
-    check_err(err, 0, "Failed to enable Zigbee channel.");
-    mqtt_log("Zigbee channel enabled!");
+    int ThreadSuccess4 = 0;
+    pthread_t *channel_thread_id4 = (pthread_t *)malloc(sizeof(pthread_t));
+    ThreadSuccess4 = pthread_create(channel_thread_id4, NULL, (void *)runGadget, NULL); 
+    if(0 != ThreadSuccess4){
+        printf("Create Gadget pthread error\n");
+        exit(1);
+    }
 
-
-    if(CHANNEL_LIST[0].channel_thread == 0 && CHANNEL_LIST[1].channel_thread == 0 && CHANNEL_LIST[2].channel_thread == 0 && CHANNEL_LIST[3].channel_thread == 0){
+    if(*channel_thread_id1 == 0 && *channel_thread_id2 == 0 && *channel_thread_id3== 0 && *channel_thread_id4 == 0){
         printf("Process error.\n");
         exit(1);
     } else{
-        pthread_join(CHANNEL_LIST[0].channel_thread, NULL);
-        pthread_join(CHANNEL_LIST[1].channel_thread, NULL);
-        pthread_join(CHANNEL_LIST[2].channel_thread, NULL);
-        pthread_join(CHANNEL_LIST[3].channel_thread, NULL);
+        pthread_join(*channel_thread_id1, NULL);
+        pthread_join(*channel_thread_id2, NULL);
+        pthread_join(*channel_thread_id3, NULL);
+        pthread_join(*channel_thread_id4, NULL);
     }
-
     printf("End of main process.\n");
 
     return 0;
