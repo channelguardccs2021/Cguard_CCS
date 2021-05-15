@@ -19,3 +19,11 @@
 >int checkChannel(char *channel_name) {return 1;}
 >int disableChannel(char *channel_name) {return 0;}
 >int closeotherChannel(char *channel_name){return 1;}
+
+
+# Alexa Gadget Setup
+1. To create a gadget that works with your Echo device, you first need to register a new gadget in the Alexa Voice Service Developer Console to get Amazon ID and Alexa Gadget Secret.
+2. Fill Amazon ID and Alexa Gadget Secret in ./src/AmazonGagdet/GadgetLed.ini.
+3. Setup Gagdet by
+> sudo python3 ./lib/Alexa-Gadgets-Raspberry-Pi-Samples/launch.py --setup
+
